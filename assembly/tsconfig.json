@@ -1,0 +1,17 @@
+{
+  "extends": "assemblyscript/std/assembly.json",
+  "include": [
+    "./**/*.ts"
+  ],
+  "compileOnSave": true,
+  "targets": {
+    "release": {
+      "optimize": true,
+      "binaryFile": "torus.release.wasm"
+    },
+    "debug": {
+      "debug": true,
+      "binaryFile": "torus.debug.wasm"
+    }
+  }
+}

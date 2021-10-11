@@ -1,0 +1,39 @@
+{
+  "name": "torus",
+  "version": "1.0.0",
+  "description": "A web-based game engine, build with typescript and assemblyscript",
+  "main": "index.js",
+  "scripts": {
+    "test": "node tests",
+    "asbuild:untouched": "asc assembly/index.ts --target debug",
+    "asbuild:optimized": "asc assembly/index.ts --target release",
+    "asbuild": "npm run asbuild:untouched && npm run asbuild:optimized",
+    "build": "cd ./src && npm run asbuild:optimized && tsc",
+    "release": "npm run build && snowpack build",
+    "dev": "snowpack dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cauvmou/Torus.git"
+  },
+  "author": "cauvmou",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cauvmou/Torus/issues"
+  },
+  "homepage": "https://github.com/cauvmou/Torus#readme",
+  "dependencies": {
+    "@assemblyscript/loader": "^0.19.17",
+    "assemblyscript": "^0.19.17",
+    "cross-env": "^7.0.3",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "ncp": "^2.0.0",
+    "typescript": "^4.4.3"
+  },
+  "devDependencies": {
+    "assemblyscript": "^0.19.17",
+    "npc": "^0.0.1",
+    "snowpack": "^3.8.8"
+  }
+}
