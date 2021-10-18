@@ -7,7 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { validateContext } from "./helpers/contextHandler";
+import { validateContext } from "./helpers/contextHandler.js";
 function Init() {
     return __awaiter(this, void 0, void 0, function* () {
         // *Setup Basic Canvas
@@ -28,9 +28,10 @@ function Init() {
         // *fetch Shaders (Tesing)
         const vertexShader = yield (yield fetch("/assets/vert.glsl")).text();
         const fragmentShader = yield (yield fetch("/assets/frag.glsl")).text();
+        console.log(vertexShader);
+        console.log(fragmentShader);
         function TorusDemo() {
             GL.clearColor(0.5, 0.75, 1, 1);
-            GL.clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
         }
         TorusDemo();
     });

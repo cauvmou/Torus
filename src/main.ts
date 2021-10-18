@@ -1,3 +1,5 @@
+import { validateContext, TorusRenderingContext } from "./helpers/contextHandler";
+
 async function Init() {
     // *Setup Basic Canvas
     // HTML Canvas Creation
@@ -8,61 +10,25 @@ async function Init() {
         document.getRootNode().appendChild(HTML_CANVAS);
     }
 
+    let GL = HTML_CANVAS.getContext("webgl2") as WebGL2RenderingContext;
+    GL = validateContext(HTML_CANVAS, GL) as WebGL2RenderingContext;
+
     function resizeCanvas() {
         HTML_CANVAS.width = window.innerWidth;
         HTML_CANVAS.height = window.innerHeight;
     }
     resizeCanvas()
 
-    // WebGL Context Creation
-    let CONTEXT: WebGLRenderingContext = HTML_CANVAS.getContext('webgl') as WebGLRenderingContext;
-    if (!CONTEXT) {
-        console.error("Your browser is not capable of WebGL!");
+    // *fetch Shaders (Tesing)
+    const vertexShader = await (await fetch("/assets/vert.glsl")).text();
+    const fragmentShader = await (await fetch("/assets/frag.glsl")).text();
+
+    function TorusDemo() {
+
+        GL.clearColor(0.5, 0.75, 1, 1);
+        GL.clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
+
     }
-
-    window.addEventListener('resize', () => {
-        resizeCanvas();
-        TorusDemo();
-    }, false);
-    //*#####
-
-    // *Rendering
-
-    const vert = await(await fetch("/assets/vert.glsl")).text();
-    const frag = await(await fetch("/assets/frag.glsl")).text();
-
-    const vertexShader = CONTEXT.createShader(CONTEXT.VERTEX_SHADER) as WebGLShader;
-    const fragmentShader = CONTEXT.createShader(CONTEXT.FRAGMENT_SHADER) as WebGLShader;
-
-    CONTEXT.shaderSource(vertexShader, vert);
-    CONTEXT.shaderSource(fragmentShader, frag);
-
-    CONTEXT.compileShader(vertexShader);
-    if (!CONTEXT.getShaderParameter(vertexShader, CONTEXT.COMPILE_STATUS))
-        console.error("Failed to compile vertex shader!", CONTEXT.getShaderInfoLog(vertexShader));
-    
-    CONTEXT.compileShader(fragmentShader);
-    if (!CONTEXT.getShaderParameter(fragmentShader, CONTEXT.COMPILE_STATUS))
-        console.error("Failed to compile fragment shader!", CONTEXT.getShaderInfoLog(fragmentShader));
-
-    const program = CONTEXT.createProgram() as WebGLProgram;
-
-    CONTEXT.attachShader(program, vertexShader);
-    CONTEXT.attachShader(program, fragmentShader);
-
-    CONTEXT.linkProgram(program);
-    if (!CONTEXT.getProgramParameter(program, CONTEXT.LINK_STATUS))
-        console.error("Failed to link program!", CONTEXT.getProgramInfoLog(program));
-    
-    CONTEXT.validateProgram(program);
-    if (!CONTEXT.getProgramParameter(program, CONTEXT.VALIDATE_STATUS))
-        console.error("Failed to validate program!", CONTEXT.getProgramInfoLog(program));
-    
-    async function TorusDemo() {
-        CONTEXT.clearColor(1.0, 1.0, 1.0, 1.0);
-        CONTEXT.clear(CONTEXT.COLOR_BUFFER_BIT | CONTEXT.DEPTH_BUFFER_BIT);
-    }
-    TorusDemo();
-
+    TorusDemo()
 }
 Init()
