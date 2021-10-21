@@ -2,30 +2,33 @@ import { validateContext, validateShader, checkupProgram } from "./helpers/conte
 
 async function Init() {
     //* Setup Basic Canvas
+    const ROOT = document.getElementsByTagName("body")[0] as HTMLBodyElement;
     // HTML Canvas Creation
     let HTML_CANVAS = document.getElementById('torus') as HTMLCanvasElement;
     if (!HTML_CANVAS) {
         HTML_CANVAS = document.createElement('canvas');
         HTML_CANVAS.id = "torus";
-        document.getRootNode().appendChild(HTML_CANVAS);
-    }
-
-    let GL = HTML_CANVAS.getContext("webgl2") as WebGL2RenderingContext;
-    validateContext(HTML_CANVAS, GL);
-
-    function resizeCanvas() {
         HTML_CANVAS.width = window.innerWidth;
         HTML_CANVAS.height = window.innerHeight;
-        GL = HTML_CANVAS.getContext("webgl2") as WebGL2RenderingContext;
-        validateContext(HTML_CANVAS, GL);
-        TorusDemo()
+        ROOT.appendChild(HTML_CANVAS);
     }
-    resizeCanvas()
 
     //* fetch Shaders (Tesing)
     const vertexText = await (await fetch("/assets/vert.glsl")).text();
     const fragmentText = await (await fetch("/assets/frag.glsl")).text();
 
+    let GL = HTML_CANVAS.getContext("webgl2") as WebGL2RenderingContext;
+    validateContext(HTML_CANVAS, GL);
+
+    window.addEventListener("resize", resizeCanvas);
+    function resizeCanvas() {
+        HTML_CANVAS.width = window.innerWidth;
+        HTML_CANVAS.height = window.innerHeight;
+        GL.viewport(0, 0, HTML_CANVAS.width, HTML_CANVAS.height)
+        TorusDemo()
+    }
+    resizeCanvas()
+    
     function TorusDemo() {
 
         GL.clearColor(0.5, 0.75, 1, 1);
@@ -91,6 +94,5 @@ async function Init() {
         GL.drawArrays(GL.TRIANGLES, 0, 3);
 
     }
-    TorusDemo()
 }
 Init()

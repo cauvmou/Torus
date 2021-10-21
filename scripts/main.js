@@ -11,28 +11,29 @@ import { validateContext, validateShader, checkupProgram } from "./helpers/conte
 function Init() {
     return __awaiter(this, void 0, void 0, function* () {
         //* Setup Basic Canvas
+        const ROOT = document.getElementsByTagName("body")[0];
         // HTML Canvas Creation
         let HTML_CANVAS = document.getElementById('torus');
         if (!HTML_CANVAS) {
             HTML_CANVAS = document.createElement('canvas');
             HTML_CANVAS.id = "torus";
-            document.getRootNode().appendChild(HTML_CANVAS);
-        }
-        let GL = HTML_CANVAS.getContext("webgl2");
-        validateContext(HTML_CANVAS, GL);
-        function resizeCanvas() {
-            document.getRootNode().removeChild(HTML_CANVAS);
-            document.getRootNode().appendChild(HTML_CANVAS);
             HTML_CANVAS.width = window.innerWidth;
             HTML_CANVAS.height = window.innerHeight;
-            GL = HTML_CANVAS.getContext("webgl2");
-            validateContext(HTML_CANVAS, GL);
-            TorusDemo();
+            ROOT.appendChild(HTML_CANVAS);
         }
-        resizeCanvas();
         //* fetch Shaders (Tesing)
         const vertexText = yield (yield fetch("/assets/vert.glsl")).text();
         const fragmentText = yield (yield fetch("/assets/frag.glsl")).text();
+        let GL = HTML_CANVAS.getContext("webgl2");
+        validateContext(HTML_CANVAS, GL);
+        window.addEventListener("resize", resizeCanvas);
+        function resizeCanvas() {
+            HTML_CANVAS.width = window.innerWidth;
+            HTML_CANVAS.height = window.innerHeight;
+            GL.viewport(0, 0, HTML_CANVAS.width, HTML_CANVAS.height);
+            TorusDemo();
+        }
+        resizeCanvas();
         function TorusDemo() {
             GL.clearColor(0.5, 0.75, 1, 1);
             GL.clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
@@ -72,7 +73,6 @@ function Init() {
             GL.useProgram(program);
             GL.drawArrays(GL.TRIANGLES, 0, 3);
         }
-        TorusDemo();
     });
 }
 Init();
